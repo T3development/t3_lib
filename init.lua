@@ -26,6 +26,7 @@ end
 t3 = {}
 local context = IsDuplicityVersion() and 'server' or 'client'
 local events = {
+    showMetadata = "t3_lib:showMetadata",
     notify = "t3_lib:notify",
     createCallback = "t3_lib:createCallback",
     triggerCallback = "t3_lib:triggerCallback",
@@ -48,6 +49,7 @@ local function createEventHandler(eventName, triggerFunction)
 end
 
 if context == 'client' then
+    t3.showMetadata = createEventHandler(events.showMetadata, TriggerEvent)
     t3.notify = createEventHandler(events.notify, TriggerEvent)
     t3.createCallback = createEventHandler(events.createCallback, TriggerServerEvent)
     t3.triggerCallback = createEventHandler(events.triggerCallback, TriggerEvent, ...)
@@ -62,6 +64,9 @@ if context == 'client' then
     t3.setTarget = createEventHandler(events.setTarget, TriggerEvent)
     t3.closeInv = createEventHandler(events.closeInv, TriggerEvent)
 else
+    t3.showMetadata = function(playerId, data)
+        TriggerClientEvent(events.showMetadata, playerId, data)
+    end
     t3.notify = function(playerId, data)
         TriggerClientEvent(events.notify, playerId, data)
     end

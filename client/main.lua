@@ -30,6 +30,16 @@ elseif Config.Framework == 'QB' then
     end)
 end
 exports("getInv", function() return Config.Inventory end)
+RegisterNetEvent("t3_lib:showMetadata", function(data)
+    if Config.Inventory == 'ox' then
+        if data.metadata then
+            for k,v in pairs(data.metadata) do
+                print(v.name)
+                exports.ox_inventory:displayMetadata(v.name,v.label)
+            end
+        end
+    end
+end)
 --Notify Event (You can add your own notification event here or use one of the provided examples)
 RegisterNetEvent("t3_lib:notify", function(data)
     local n = {
