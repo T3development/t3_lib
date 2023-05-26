@@ -34,7 +34,6 @@ RegisterNetEvent("t3_lib:showMetadata", function(data)
     if Config.Inventory == 'ox' then
         if data.metadata then
             for k,v in pairs(data.metadata) do
-                print(v.name)
                 exports.ox_inventory:displayMetadata(v.name,v.label)
             end
         end

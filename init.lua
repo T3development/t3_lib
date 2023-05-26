@@ -33,6 +33,7 @@ local events = {
     registerUsableItem = "t3_lib:registerUsableItem",
     addMoney = "t3_lib:addMoney",
     removeMoney = "t3_lib:removeMoney",
+    getMoney = "t3_lib:getMoney",
     addItem = "t3_lib:addItem",
     removeItem = "t3_lib:removeItem",
     getItemBySlot = "t3_lib:getItemBySlot",
@@ -40,6 +41,7 @@ local events = {
     setMetadata = "t3_lib:setMetadata",
     setTarget = "t3_lib:setTarget",
     closeInv = "t3_lib:closeInv",
+    getIdentifier = "t3_lib:getIdentifier",
 }
 
 local function createEventHandler(eventName, triggerFunction)
@@ -56,6 +58,7 @@ if context == 'client' then
     t3.registerUsableItem = createEventHandler(events.registerUsableItem, TriggerServerEvent)
     t3.addMoney = createEventHandler(events.addMoney, TriggerServerEvent)
     t3.removeMoney = createEventHandler(events.removeMoney, TriggerServerEvent)
+    t3.getMoney = createEventHandler(events.getMoney, TriggerServerEvent)
     t3.addItem = createEventHandler(events.addItem, TriggerServerEvent)
     t3.removeItem = createEventHandler(events.removeItem, TriggerServerEvent)
     t3.getItemBySlot = createEventHandler(events.getItemBySlot, TriggerServerEvent)
@@ -63,6 +66,7 @@ if context == 'client' then
     t3.setMetadata = createEventHandler(events.setMetadata, TriggerServerEvent)
     t3.setTarget = createEventHandler(events.setTarget, TriggerEvent)
     t3.closeInv = createEventHandler(events.closeInv, TriggerEvent)
+    t3.getIdentifier = createEventHandler(events.getIdentifier, TriggerServerEvent)
 else
     t3.showMetadata = function(playerId, data)
         TriggerClientEvent(events.showMetadata, playerId, data)
@@ -77,6 +81,7 @@ else
     t3.registerUsableItem = createEventHandler(events.registerUsableItem, TriggerEvent)
     t3.addMoney = createEventHandler(events.addMoney, TriggerEvent)
     t3.removeMoney = function(data) return export:removeMoney(data) end
+    t3.getMoney = function(data) return export:getMoney(data) end
     t3.addItem = createEventHandler(events.addItem, TriggerEvent)
     t3.removeItem = createEventHandler(events.removeItem, TriggerEvent)
     t3.getItemBySlot = function(data) return export:getItemBySlot(data) end
@@ -88,4 +93,5 @@ else
     t3.closeInv = function(playerId)
         TriggerClientEvent(events.closeInv, playerId)
     end
+    t3.getIdentifier = function(data) return export:getIdentifier(data) end
 end

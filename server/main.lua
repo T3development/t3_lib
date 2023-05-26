@@ -49,6 +49,21 @@ if Config.Framework == 'ESX' then
     RegisterNetEvent("t3_lib:removeMoney", function(data)
         return removeMoney(data)
     end)
+    local function getMoney(data)
+        local _source = data.target
+        local xPlayer = ESX.GetPlayerFromId(_source)
+        if data.account ~= 'cash' then
+            local acc = xPlayer.getAccount(data.account)
+            return acc.money
+        else
+            local acc = xPlayer.getMoney()
+            return acc.money
+        end
+    end
+    exports("getMoney", getMoney)
+    RegisterNetEvent("t3_lib:getMoney", function(data)
+        return getMoney(data)
+    end)
     RegisterNetEvent("t3_lib:addItem", function(data)
         local _source = data.target
         if Config.Inventory == 'ox' then
@@ -167,6 +182,14 @@ if Config.Framework == 'ESX' then
             print("ERROR: No ESX compatible inventory selected")
         end
     end)
+    local function getIdentifier(data)
+        local xPlayer = ESX.GetPlayerFromId(data.target)
+        return xPlayer.identifier
+    end
+    exports("getIdentifier", getIdentifier)
+    RegisterNetEvent("t3_lib:getIdentifier", function(data)
+        return getIdentifier(data)
+    end)
 elseif Config.Framework == 'QB' then
     QBCore = exports['qb-core']:GetCoreObject()
     local function getFramework()
@@ -216,6 +239,16 @@ elseif Config.Framework == 'QB' then
     exports("removeMoney", removeMoney)
     RegisterNetEvent("t3_lib:removeMoney", function(data)
         return removeMoney(data)
+    end)
+    local function getMoney(data)
+        local src = data.target
+        local Player = QBCore.Functions.GetPlayer(src)
+        local acc = Player.Functions.GetMoney(data.account)
+        return acc
+    end
+    exports("getMoney", getMoney)
+    RegisterNetEvent("t3_lib:getMoney", function(data)
+        return getMoney(data)
     end)
     RegisterNetEvent("t3_lib:addItem", function(data)
         local src = data.target
@@ -294,12 +327,22 @@ elseif Config.Framework == 'QB' then
         if Config.Inventory == 'ox' then
             local ox_inventory = exports["ox_inventory"]
             ox_inventory:SetMetadata(src, data.slot, data.metadata)
-        elseif Config.Inventory == 'qb' or Config.Inventory == 'qs' then
+        elseif Config.Inventory == 'qs' then
+            exports['qs-inventory']:SetItemMetadata(_source, data.slot, data.metadata)
+        elseif Config.Inventory == 'qb' then
             local Player = QBCore.Functions.GetPlayer(src)
             Player.PlayerData.items[data.slot].info = data.metadata
             Player.Functions.SetInventory(Player.PlayerData.items)
         else
             print("ERROR: No QB compatible inventory selected")
         end
+    end)
+    local function getIdentifier(data)
+        local license = QBCore.Functions.GetIdentifier(data.target, 'license')
+        return license
+    end
+    exports("getIdentifier", getIdentifier)
+    RegisterNetEvent("t3_lib:getIdentifier", function(data)
+        return getIdentifier(data)
     end)
 end
