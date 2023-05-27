@@ -258,15 +258,18 @@ elseif Config.Framework == 'QB' then
             if (canCarryItem) then
                 ox_inventory:AddItem(src, data.item, data.qty, data.metadata)
             end
-        elseif Config.Inventory == 'qb' or Config.Inventory == 'qs' then
-            if Config.Inventory == 'qb' then
-                if data.metadata and data.metadata.image then
-                    data.metadata.image = data.metadata.image..".png"
-                end
-                TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[data.item], "add")
+        elseif Config.Inventory == 'qs' then
+            local canCarryItem = exports['qs-inventory']:CanCarryItem(src, data.item, data.qty)
+            if (canCarryItem) then
+                exports['qs-inventory']:AddItem(src, data.item, data.qty, nil, data.metadata)
+            end
+        elseif Config.Inventory == 'qb' then
+            if data.metadata and data.metadata.image then
+                data.metadata.image = data.metadata.image..".png"
             end
             local Player = QBCore.Functions.GetPlayer(src)
             Player.Functions.AddItem(data.item, data.qty, data.slot, data.metadata)
+            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[data.item], "add")
         else
             print("ERROR: No QB compatible inventory selected")
         end
@@ -276,12 +279,12 @@ elseif Config.Framework == 'QB' then
         if Config.Inventory == 'ox' then
             local ox_inventory = exports['ox_inventory']
             ox_inventory:RemoveItem(src, data.item, data.qty, data.metadata, data.slot)
-        elseif Config.Inventory == 'qb' or Config.Inventory == 'qs' then
+        elseif Config.Inventory == 'qs' then
+            exports['qs-inventory']:RemoveItem(src, data.item, data.qty, data.slot)
+        elseif Config.Inventory == 'qb' then
             local Player = QBCore.Functions.GetPlayer(src)
             Player.Functions.RemoveItem(data.item, data.qty, data.slot)
-            if Config.Inventory == 'qb' then
-                TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[data.item], "remove")
-            end
+            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[data.item], "remove")
         else
             print("ERROR: No QB compatible inventory selected")
         end
@@ -328,7 +331,7 @@ elseif Config.Framework == 'QB' then
             local ox_inventory = exports["ox_inventory"]
             ox_inventory:SetMetadata(src, data.slot, data.metadata)
         elseif Config.Inventory == 'qs' then
-            exports['qs-inventory']:SetItemMetadata(_source, data.slot, data.metadata)
+            exports['qs-inventory']:SetItemMetadata(src, data.slot, data.metadata)
         elseif Config.Inventory == 'qb' then
             local Player = QBCore.Functions.GetPlayer(src)
             Player.PlayerData.items[data.slot].info = data.metadata
