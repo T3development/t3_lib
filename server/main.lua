@@ -12,7 +12,7 @@ if Config.Framework == 'ESX' then
         if Config.Inventory == 'qs' then
             exports['qs-inventory']:CreateUsableItem(data.item, data.func)
         else
-            ESX.registerUsableItem(data.item, data.func)
+            ESX.RegisterUsableItem(data.item, data.func)
         end
     end)
     RegisterNetEvent("t3_lib:addMoney", function(data)
