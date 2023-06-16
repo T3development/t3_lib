@@ -57,7 +57,7 @@ if Config.Framework == 'ESX' then
             return acc.money
         else
             local acc = xPlayer.getMoney()
-            return acc.money
+            return acc
         end
     end
     exports("getMoney", getMoney)
