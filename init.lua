@@ -3,8 +3,22 @@ if not _VERSION:find('5.4') then
 end
 
 Framework, FW = nil, nil
+Cops = 0
 local t3_lib = 't3_lib'
 local export = exports[t3_lib]
+
+if not GetResourceState(t3_lib):find('start') then
+    error('^1t3_lib should be started before this resource.^0', 2)
+else if GetResourceState(t3_lib) ~= 'started' then
+    for i = 1, 10 do
+        Wait(1000)
+        if GetResourceState(t3_lib) == 'started' then
+            return
+        end
+    end
+    error('^1t3_lib failed to start.^0', 2)
+end
+
 Inventory = export:getInv()
 Citizen.CreateThread(function()
     while FW == nil do
@@ -19,10 +33,6 @@ Citizen.CreateThread(function()
         end
     end
 end)
-
-if not GetResourceState(t3_lib):find('start') then
-    error('^1t3_lib should be started before this resource.^0', 2)
-end
 t3 = {}
 local context = IsDuplicityVersion() and 'server' or 'client'
 local events = {
@@ -42,6 +52,8 @@ local events = {
     setTarget = "t3_lib:setTarget",
     closeInv = "t3_lib:closeInv",
     getIdentifier = "t3_lib:getIdentifier",
+    getPlayerName = "t3_lib:getPlayerName",
+    progressBar = "t3_lib:progressBar",
 }
 
 local function createEventHandler(eventName, triggerFunction)
@@ -58,15 +70,15 @@ if context == 'client' then
     t3.registerUsableItem = createEventHandler(events.registerUsableItem, TriggerServerEvent)
     t3.addMoney = createEventHandler(events.addMoney, TriggerServerEvent)
     t3.removeMoney = createEventHandler(events.removeMoney, TriggerServerEvent)
-    t3.getMoney = createEventHandler(events.getMoney, TriggerServerEvent)
     t3.addItem = createEventHandler(events.addItem, TriggerServerEvent)
     t3.removeItem = createEventHandler(events.removeItem, TriggerServerEvent)
-    t3.getItemBySlot = createEventHandler(events.getItemBySlot, TriggerServerEvent)
-    t3.getItemsByName = createEventHandler(events.getItemsByName, TriggerServerEvent)
     t3.setMetadata = createEventHandler(events.setMetadata, TriggerServerEvent)
     t3.setTarget = createEventHandler(events.setTarget, TriggerEvent)
     t3.closeInv = createEventHandler(events.closeInv, TriggerEvent)
-    t3.getIdentifier = createEventHandler(events.getIdentifier, TriggerServerEvent)
+    t3.progressBar = createEventHandler(events.progressBar, TriggerEvent)
+    RegisterNetEvent("t3_lib:setCopCount", function(count)
+        Cops = count
+    end)
 else
     t3.showMetadata = function(playerId, data)
         TriggerClientEvent(events.showMetadata, playerId, data)
@@ -94,4 +106,8 @@ else
         TriggerClientEvent(events.closeInv, playerId)
     end
     t3.getIdentifier = function(data) return export:getIdentifier(data) end
+    t3.getPlayerName = function(data) return export:getPlayerName(data) end
+    t3.progressBar = function(playerId, data)
+        TriggerClientEvent(events.progressBar, playerId, data)
+    end
 end
