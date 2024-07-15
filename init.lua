@@ -9,7 +9,7 @@ local export = exports[t3_lib]
 
 if not GetResourceState(t3_lib):find('start') then
     error('^1t3_lib should be started before this resource.^0', 2)
-else if GetResourceState(t3_lib) ~= 'started' then
+elseif GetResourceState(t3_lib) ~= 'started' then
     for i = 1, 10 do
         Wait(1000)
         if GetResourceState(t3_lib) == 'started' then
