@@ -107,3 +107,29 @@ RegisterNetEvent("t3_lib:closeInv", function()
         exports["mf-inventory"]:closeInventory()
     end
 end)
+local function inputDialog(data)
+    local input
+    if Config.Input == 'ox_lib' then
+        input = lib.inputDialog(data.title, data.options)
+    elseif Config.Input == 'qb' then
+        local ops = {}
+        for k,v in pairs(data.options) do
+            ops[k] = {
+                type = v.type == "input" and "text" or v.type,
+                text = v.label,
+                isRequired = v.required,
+                name = k,
+            }
+        end
+        input = exports['qb-input']:ShowInput({
+            header = data.title,
+            submitText = "Submit",
+            inputs = ops,
+        })
+    end
+    return input
+end
+exports("inputDialog", inputDialog)
+RegisterNetEvent("t3_lib:inputDialog", function(data)
+    return inputDialog(data)
+end)

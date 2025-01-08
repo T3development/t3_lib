@@ -54,6 +54,8 @@ local events = {
     getIdentifier = "t3_lib:getIdentifier",
     getPlayerName = "t3_lib:getPlayerName",
     progressBar = "t3_lib:progressBar",
+    inputDialog = "t3_lib:inputDialog",
+    getNearbyPlayers = "t3_lib:getNearbyPlayers",
 }
 
 local function createEventHandler(eventName, triggerFunction)
@@ -79,6 +81,8 @@ if context == 'client' then
     RegisterNetEvent("t3_lib:setCopCount", function(count)
         Cops = count
     end)
+    t3.inputDialog = function(data) return export:inputDialog(data) end
+    t3.getNearbyPlayers = createEventHandler(events.getNearbyPlayers, TriggerServerEvent)
 else
     t3.showMetadata = function(playerId, data)
         TriggerClientEvent(events.showMetadata, playerId, data)
@@ -110,4 +114,8 @@ else
     t3.progressBar = function(playerId, data)
         TriggerClientEvent(events.progressBar, playerId, data)
     end
+    t3.inputDialog = function(playerId, data)
+        TriggerClientEvent(events.inputDialog, playerId, data)
+    end
+    t3.getNearbyPlayers = function(data) return export:getNearbyPlayers(data) end
 end

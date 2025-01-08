@@ -265,7 +265,9 @@ elseif Config.Framework == 'QB' then
             end
         elseif Config.Inventory == 'qb' then
             if data.metadata and data.metadata.image then
-                data.metadata.image = data.metadata.image..".png"
+                if not data.metadata.image:find(".png") then
+                    data.metadata.image = data.metadata.image..".png"
+                end
             end
             local Player = QBCore.Functions.GetPlayer(src)
             Player.Functions.AddItem(data.item, data.qty, data.slot, data.metadata)
@@ -349,3 +351,31 @@ elseif Config.Framework == 'QB' then
         return getIdentifier(data)
     end)
 end
+local function getNearbyPlayers(data)
+    local players = GetActivePlayers()
+    local nearby = {}
+    local count = 0
+    maxDistance = data.maxDistance or 2.0
+
+    for i=1, #players do
+        local playerId = players[i]
+        local playerPed = GetPlayerPed(playerId)
+        local playerCoords = GetEntityCoords(playerPed)
+        local distance = #(playerCoords - data.coords)
+
+        if distance < maxDistance then
+            count += 1
+            nearby[count] = {
+                id = playerId,
+                ped = playerPed,
+                coords = playerCoords,
+            }
+        end
+    end
+
+    return nearby
+end
+exports("getNearbyPlayers", getNearbyPlayers)
+RegisterNetEvent("t3_lib:getNearbyPlayers", function(data)
+    return getNearbyPlayers(data)
+end)

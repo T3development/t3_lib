@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 't3mpu5'
 description 't3_lib'
-version '1.0.2'
+version '1.0.4'
 
 
 files {
@@ -12,11 +12,14 @@ files {
 }
 
 client_scripts {
-    'config.lua',
 	'client/main.lua',
 }
 
 server_scripts {
-    'config.lua',
 	'server/main.lua',
+}
+
+shared_scripts {
+    '@ox_lib/init.lua',
+    'config.lua',
 }
